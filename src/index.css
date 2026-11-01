@@ -1,4 +1,4 @@
-﻿:root { --button-color:linear-gradient(135deg,#ff4d8d 0%,#ff7a45 35%,#ffc857 65%,#8b5cf6 100%); font-family: Poppins, ui-sans-serif, system-ui, sans-serif; color: #f4f4f5; background: #090909; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+﻿:root { font-family: Poppins, ui-sans-serif, system-ui, sans-serif; color: #f4f4f5; background: #090909; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 * { box-sizing: border-box; } body { margin: 0; min-width: 320px; min-height: 100vh; background: #090909; color: #f4f4f5; } button, input { font: inherit; } button { cursor: pointer; } #root { min-height: 100vh; }
 :root[data-theme='light'] { color-scheme: light; color: #171717; background: #f2f2ed; }
 :root[data-theme='light'] body { color: #171717; background: #f2f2ed; }

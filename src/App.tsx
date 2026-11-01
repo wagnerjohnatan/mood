@@ -22,20 +22,11 @@ function App() {
   const [lowKey, setLowKey] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [lightMode, setLightMode] = useState(() => localStorage.getItem('mood-theme') === 'light')
-  const [customizerOpen, setCustomizerOpen] = useState(false)
-  const [buttonColor, setButtonColor] = useState(() => localStorage.getItem('mood-button-color') || 'gradient')
 
   useEffect(() => {
     document.documentElement.dataset.theme = lightMode ? 'light' : 'dark'
     localStorage.setItem('mood-theme', lightMode ? 'light' : 'dark')
   }, [lightMode])
-
-  useEffect(() => {
-    const platformGradient = 'linear-gradient(135deg,#ff4d8d 0%,#ff7a45 35%,#ffc857 65%,#8b5cf6 100%)'
-    document.documentElement.style.setProperty('--button-color', buttonColor === 'gradient' ? platformGradient : buttonColor)
-    document.documentElement.dataset.buttonStyle = buttonColor === 'gradient' ? 'gradient' : 'solid'
-    localStorage.setItem('mood-button-color', buttonColor)
-  }, [buttonColor])
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
@@ -64,19 +55,6 @@ function App() {
           <div className="top-actions">
             <button className="icon-button theme-toggle" aria-label={lightMode ? 'Ativar modo escuro' : 'Ativar modo claro'} aria-pressed={lightMode} onClick={() => setLightMode((enabled) => !enabled)}>{lightMode ? '☾' : '☀'}</button>
             <button className="icon-button" aria-label="Buscar">⌕</button>
-            <div className="customizer">
-              <button className={`icon-button customize-button ${customizerOpen ? 'active' : ''}`} aria-label="Personalizar cores dos botões" aria-expanded={customizerOpen} onClick={() => setCustomizerOpen((open) => !open)}>⚙</button>
-              {customizerOpen && <div className="customizer-menu" role="dialog" aria-label="Personalizar cor dos botões">
-                <strong>Personalizar</strong>
-                <span>Cor dos botões</span>
-                <div className="color-options">
-                  <button key="gradient" className={`gradient-option ${buttonColor === 'gradient' ? 'selected' : ''}`} aria-label="Usar gradiente padrão da plataforma" title="Gradiente padrão" onClick={() => setButtonColor('gradient')} />
-                  {[['Roxo','#8b5cf6'],['Azul','#49c6e5'],['Rosa','#ff4d8d'],['Laranja','#ff7a45'],['Amarelo','#ffc857'],['Verde','#7cc576'],['Branco','#f4f4f5']].map(([name,color]) => (
-                    <button key={color} className={buttonColor === color ? 'selected' : ''} style={{backgroundColor:color}} aria-label={`Usar cor ${name}`} title={name} onClick={() => setButtonColor(color)} />
-                  ))}
-                </div>
-              </div>}
-            </div>
             <button className={`lowkey-toggle ${lowKey ? 'active' : ''}`} onClick={() => setLowKey((enabled) => !enabled)} aria-pressed={lowKey}><span className="toggle-track"><i></i></span><span>Low-Key</span></button>
             <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>          </div>
         </header>
