@@ -20,6 +20,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeCapsule, setActiveCapsule] = useState<number | null>(null)
   const [lowKey, setLowKey] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [lightMode, setLightMode] = useState(() => localStorage.getItem('mood-theme') === 'light')
 
   useEffect(() => {
@@ -29,9 +30,10 @@ function App() {
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
-    <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''} ${lowKey ? 'low-key' : ''}`}>
+    <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''} ${lowKey ? 'low-key' : ''} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <aside className="sidebar">
         <div className="brand"><span>mood</span></div>
+        <button className="sidebar-toggle" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? 'Expandir menu' : 'Retrair menu'} title={sidebarCollapsed ? 'Expandir menu' : 'Retrair menu'}>{sidebarCollapsed ? '›' : '‹'}</button>
         <nav className="main-nav" aria-label="Navegação principal">
           <button className={`nav-item ${view === 'feed' ? 'active' : ''}`} onClick={() => setView('feed')}><span>⌂</span> Home</button>
           <button className="nav-item"><span>⌕</span> Explorar</button>
