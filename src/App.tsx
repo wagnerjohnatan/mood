@@ -18,10 +18,11 @@ function App() {
   const [activeMood, setActiveMood] = useState<Mood>('Para todos')
   const [view, setView] = useState<'feed' | 'board' | 'analytics'>('feed')
   const [isPlaying, setIsPlaying] = useState(false)
+  const [activeCapsule, setActiveCapsule] = useState<number | null>(null)
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''}`}>
       <aside className="sidebar">
         <div className="brand"><span className="brand-mark">m</span><span>mood</span></div>
         <nav className="main-nav" aria-label="Navegação principal">
@@ -47,6 +48,14 @@ function App() {
             <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>
           </div>
         </header>
+
+        <section className="capsules" aria-label="Cápsulas temporárias">
+          {[['lia','Melancólico','https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'],['mila','Chill','https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop'],['theo','Hype','https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop'],['nina','Adrenaline','https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&auto=format&fit=crop']].map((capsule,index)=>(
+            <button key={capsule[0]} className={`capsule capsule-${index + 1} ${activeCapsule === index ? 'viewing' : ''}`} onClick={() => setActiveCapsule(activeCapsule === index ? null : index)}>
+              <img src={capsule[2]} alt="" /><strong>{capsule[0]}</strong><span>{capsule[1]}</span>
+            </button>
+          ))}
+        </section>
 
         <div className="mood-filters" role="tablist" aria-label="Filtros por estado de espírito">
           {moods.map((mood) => (
