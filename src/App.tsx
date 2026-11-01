@@ -31,7 +31,7 @@ function App() {
   return (
     <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''} ${lowKey ? 'low-key' : ''}`}>
       <aside className="sidebar">
-        <div className="brand"><span className="brand-mark">m</span><span>mood</span></div>
+        <div className="brand"><span>mood</span></div>
         <nav className="main-nav" aria-label="Navegação principal">
           <button className={`nav-item ${view === 'feed' ? 'active' : ''}`} onClick={() => setView('feed')}><span>⌂</span> Home</button>
           <button className="nav-item"><span>⌕</span> Explorar</button>
