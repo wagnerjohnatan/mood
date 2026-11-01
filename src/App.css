@@ -6,7 +6,7 @@
 .nav-item { border:0; background:transparent; color:#858585; height:46px; padding:0 13px; border-radius:12px; display:flex; align-items:center; gap:13px; text-align:left; font-size:15px; }
 .nav-item span { width:20px; font-size:20px; text-align:center; }
 .nav-item.active { color:#fff; background:#171717; }
-.create-button { margin-top:26px; height:48px; border:0; border-radius:12px; background:#dfff5a; color:#101010; font-weight:800; }
+.create-button { margin-top:26px; height:48px; border:0; border-radius:12px; background:linear-gradient(135deg,#ff4d8d 0%,#ff7a45 35%,#ffc857 65%,#8b5cf6 100%); color:#fff; font-weight:800; box-shadow:0 8px 24px rgba(255,77,141,.24); transition:transform .2s ease,box-shadow .2s ease; }.create-button:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,122,69,.32)}
 .sidebar-profile { margin-top:auto; border-top:1px solid #242424; padding-top:18px; display:flex; align-items:center; gap:10px; }
 .sidebar-profile img { width:38px; height:38px; border-radius:50%; object-fit:cover; }
 .sidebar-profile div { display:flex; flex-direction:column; min-width:0; flex:1; }
