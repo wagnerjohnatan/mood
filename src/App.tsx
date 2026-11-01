@@ -77,6 +77,16 @@ function App() {
             </article>
           ))}
         </section>}
+
+        {view === 'analytics' && <section className="analytics" aria-label="Analytics de creator">
+          <div className="metric-grid">
+            <article><span>Engajamento</span><strong>8,4%</strong><small>+12% este mês</small></article>
+            <article><span>Alcance</span><strong>124k</strong><small>+18,2% esta semana</small></article>
+            <article><span>Retenção</span><strong>68%</strong><small>7% acima da média</small></article>
+          </div>
+          <article className="chart-card"><div className="chart-head"><div><span>Performance</span><strong>Interações por hora</strong></div><button>Últimos 7 dias⌄</button></div><div className="chart-bars">{[42,58,38,76,52,88,64,92,70,48,82,56].map((height,index)=><i key={index} style={{height:`${height}%`}}></i>)}</div></article>
+          <article className="retention-card"><span>Retenção por público</span><div><strong>Seguidores</strong><b>72%</b></div><div className="progress"><i style={{width:'72%'}}></i></div><div><strong>Não seguidores</strong><b>46%</b></div><div className="progress"><i style={{width:'46%'}}></i></div></article>
+        </section>}
       </main>
     </div>
   )
