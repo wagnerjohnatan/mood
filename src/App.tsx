@@ -22,6 +22,34 @@ function App() {
   const [lowKey, setLowKey] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [lightMode, setLightMode] = useState(() => localStorage.getItem('mood-theme') === 'light')
+  const [overlayText, setOverlayText] = useState<Record<number, 'light' | 'dark'>>({})
+
+  useEffect(() => {
+    posts.forEach((post) => {
+      const image = new Image()
+      image.crossOrigin = 'anonymous'
+      image.onload = () => {
+        try {
+          const canvas = document.createElement('canvas')
+          canvas.width = 80
+          canvas.height = 20
+          const context = canvas.getContext('2d', { willReadFrequently: true })
+          if (!context) return
+          context.drawImage(image, 0, 0, canvas.width, canvas.height)
+          const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data
+          let luminance = 0
+          for (let index = 0; index < pixels.length; index += 4) {
+            luminance += (pixels[index] * 299 + pixels[index + 1] * 587 + pixels[index + 2] * 114) / 1000
+          }
+          const average = luminance / (pixels.length / 4)
+          setOverlayText((current) => ({ ...current, [post.id]: average < 140 ? 'light' : 'dark' }))
+        } catch {
+          setOverlayText((current) => ({ ...current, [post.id]: 'light' }))
+        }
+      }
+      image.src = post.image
+    })
+  }, [])
 
   useEffect(() => {
     document.documentElement.dataset.theme = lightMode ? 'light' : 'dark'
@@ -78,8 +106,8 @@ function App() {
         {view === 'feed' && <section className="feed-grid" aria-live="polite">
           {filteredPosts.map((post, index) => (
             <article className={`post-card post-${index % 4}`} key={post.id}>
-              <img src={post.image} alt={post.title} />
-              <div className="post-overlay">
+              <img src={post.image} crossOrigin="anonymous" alt={post.title} />
+              <div className={`post-overlay overlay-${overlayText[post.id] || 'light'}`}>
                 <div className="post-author"><img src={post.avatar} alt="" /><strong>@{post.author}</strong></div>
                 <span className="post-mood">{post.mood}</span>
               </div>
