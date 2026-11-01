@@ -49,7 +49,7 @@ function App() {
 
       <main className="main-content">
         <header className="topbar">
-          <div><p className="eyebrow">Descobrir</p><h1>Qual é o seu mood?</h1></div>
+          <div><p className="eyebrow">Descobrir</p></div>
           <div className="top-actions">
             <button className="icon-button theme-toggle" aria-label={lightMode ? 'Ativar modo escuro' : 'Ativar modo claro'} aria-pressed={lightMode} onClick={() => setLightMode((enabled) => !enabled)}>{lightMode ? '☾' : '☀'}</button>
             <button className="icon-button" aria-label="Buscar">⌕</button>
