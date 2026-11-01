@@ -23,7 +23,7 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [lightMode, setLightMode] = useState(() => localStorage.getItem('mood-theme') === 'light')
   const [customizerOpen, setCustomizerOpen] = useState(false)
-  const [buttonColor, setButtonColor] = useState(() => localStorage.getItem('mood-button-color') || '#8b5cf6')
+  const [buttonColor, setButtonColor] = useState(() => localStorage.getItem('mood-button-color') || 'gradient')
 
   useEffect(() => {
     document.documentElement.dataset.theme = lightMode ? 'light' : 'dark'
@@ -31,7 +31,9 @@ function App() {
   }, [lightMode])
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--button-color', buttonColor)
+    const platformGradient = 'linear-gradient(135deg,#ff4d8d 0%,#ff7a45 35%,#ffc857 65%,#8b5cf6 100%)'
+    document.documentElement.style.setProperty('--button-color', buttonColor === 'gradient' ? platformGradient : buttonColor)
+    document.documentElement.dataset.buttonStyle = buttonColor === 'gradient' ? 'gradient' : 'solid'
     localStorage.setItem('mood-button-color', buttonColor)
   }, [buttonColor])
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
@@ -68,6 +70,7 @@ function App() {
                 <strong>Personalizar</strong>
                 <span>Cor dos botões</span>
                 <div className="color-options">
+                  <button key="gradient" className={`gradient-option ${buttonColor === 'gradient' ? 'selected' : ''}`} aria-label="Usar gradiente padrão da plataforma" title="Gradiente padrão" onClick={() => setButtonColor('gradient')} />
                   {[['Roxo','#8b5cf6'],['Azul','#49c6e5'],['Rosa','#ff4d8d'],['Laranja','#ff7a45'],['Amarelo','#ffc857'],['Verde','#7cc576'],['Branco','#f4f4f5']].map(([name,color]) => (
                     <button key={color} className={buttonColor === color ? 'selected' : ''} style={{backgroundColor:color}} aria-label={`Usar cor ${name}`} title={name} onClick={() => setButtonColor(color)} />
                   ))}
