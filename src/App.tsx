@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 const moods = ['Para todos', 'Hype', 'Chill', 'Foco', 'Adrenaline', 'Melancólico'] as const
@@ -20,6 +20,12 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeCapsule, setActiveCapsule] = useState<number | null>(null)
   const [lowKey, setLowKey] = useState(false)
+  const [lightMode, setLightMode] = useState(() => localStorage.getItem('mood-theme') === 'light')
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = lightMode ? 'light' : 'dark'
+    localStorage.setItem('mood-theme', lightMode ? 'light' : 'dark')
+  }, [lightMode])
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
@@ -45,6 +51,7 @@ function App() {
         <header className="topbar">
           <div><p className="eyebrow">Descobrir</p><h1>Qual é o seu mood?</h1></div>
           <div className="top-actions">
+            <button className="icon-button theme-toggle" aria-label={lightMode ? 'Ativar modo escuro' : 'Ativar modo claro'} aria-pressed={lightMode} onClick={() => setLightMode((enabled) => !enabled)}>{lightMode ? '☾' : '☀'}</button>
             <button className="icon-button" aria-label="Buscar">⌕</button>
             <button className={`lowkey-toggle ${lowKey ? 'active' : ''}`} onClick={() => setLowKey((enabled) => !enabled)} aria-pressed={lowKey}><span className="toggle-track"><i></i></span><span>Low-Key</span></button>
             <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>          </div>
