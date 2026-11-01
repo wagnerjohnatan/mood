@@ -17,6 +17,7 @@ const posts = [
 function App() {
   const [activeMood, setActiveMood] = useState<Mood>('Para todos')
   const [view, setView] = useState<'feed' | 'board' | 'analytics'>('feed')
+  const [isPlaying, setIsPlaying] = useState(false)
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
@@ -43,7 +44,7 @@ function App() {
           <div><p className="eyebrow">Descobrir</p><h1>Qual é o seu mood?</h1></div>
           <div className="top-actions">
             <button className="icon-button" aria-label="Buscar">⌕</button>
-            <button className="sound-button"><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>
+            <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>
           </div>
         </header>
 
