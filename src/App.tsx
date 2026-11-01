@@ -19,10 +19,11 @@ function App() {
   const [view, setView] = useState<'feed' | 'board' | 'analytics'>('feed')
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeCapsule, setActiveCapsule] = useState<number | null>(null)
+  const [lowKey, setLowKey] = useState(false)
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
-    <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''}`}>
+    <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''} ${lowKey ? 'low-key' : ''}`}>
       <aside className="sidebar">
         <div className="brand"><span className="brand-mark">m</span><span>mood</span></div>
         <nav className="main-nav" aria-label="Navegação principal">
@@ -45,8 +46,8 @@ function App() {
           <div><p className="eyebrow">Descobrir</p><h1>Qual é o seu mood?</h1></div>
           <div className="top-actions">
             <button className="icon-button" aria-label="Buscar">⌕</button>
-            <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>
-          </div>
+            <button className={`lowkey-toggle ${lowKey ? 'active' : ''}`} onClick={() => setLowKey((enabled) => !enabled)} aria-pressed={lowKey}><span className="toggle-track"><i></i></span><span>Low-Key</span></button>
+            <button className={`sound-button ${isPlaying ? 'playing' : ''}`} onClick={() => setIsPlaying((playing) => !playing)} aria-label={isPlaying ? 'Pausar soundscape' : 'Reproduzir soundscape'}><span>♫</span><span className="sound-bars"><i></i><i></i><i></i></span></button>          </div>
         </header>
 
         <section className="capsules" aria-label="Cápsulas temporárias">
