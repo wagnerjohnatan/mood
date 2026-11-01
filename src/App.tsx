@@ -16,6 +16,7 @@ const posts = [
 
 function App() {
   const [activeMood, setActiveMood] = useState<Mood>('Para todos')
+  const [view, setView] = useState<'feed' | 'board' | 'analytics'>('feed')
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
   return (
@@ -23,11 +24,11 @@ function App() {
       <aside className="sidebar">
         <div className="brand"><span className="brand-mark">m</span><span>mood</span></div>
         <nav className="main-nav" aria-label="Navegação principal">
-          <button className="nav-item active"><span>⌂</span> Home</button>
+          <button className={`nav-item ${view === 'feed' ? 'active' : ''}`} onClick={() => setView('feed')}><span>⌂</span> Home</button>
           <button className="nav-item"><span>⌕</span> Explorar</button>
-          <button className="nav-item"><span>◫</span> Moodboard</button>
+          <button className={`nav-item ${view === 'board' ? 'active' : ''}`} onClick={() => setView('board')}><span>◫</span> Moodboard</button>
           <button className="nav-item"><span>♢</span> Notificações</button>
-          <button className="nav-item"><span>◉</span> Meu perfil</button>
+          <button className={`nav-item ${view === 'analytics' ? 'active' : ''}`} onClick={() => setView('analytics')}><span>◉</span> Analytics</button>
         </nav>
         <button className="create-button">+ Criar</button>
         <div className="sidebar-profile">
@@ -54,7 +55,7 @@ function App() {
           ))}
         </div>
 
-        <section className="feed-grid" aria-live="polite">
+        {view === 'feed' && <section className="feed-grid" aria-live="polite">
           {filteredPosts.map((post, index) => (
             <article className={`post-card post-${index % 4}`} key={post.id}>
               <img src={post.image} alt={post.title} />
@@ -65,7 +66,16 @@ function App() {
               <div className="post-footer"><strong>{post.title}</strong><span>♡ {post.likes}</span></div>
             </article>
           ))}
-        </section>
+        </section>}
+
+        {view === 'board' && <section className="moodboard" aria-label="Moodboard dinâmico">
+          {posts.slice(0, 5).map((post, index) => (
+            <article draggable key={post.id} className={`board-card board-card-${index + 1}`}>
+              <img src={post.image} alt={post.title} />
+              <div><span>{post.mood}</span><strong>{post.title}</strong></div>
+            </article>
+          ))}
+        </section>}
       </main>
     </div>
   )
