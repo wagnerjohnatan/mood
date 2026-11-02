@@ -14,7 +14,98 @@ const posts = [
   { id: 6, author: 'andre', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&auto=format&fit=crop', mood: 'Foco', title: 'Horizonte', likes: '4.5k' },
 ]
 
+type AuthMode = 'login' | 'signup'
+
+function AuthScreen({ onAuthenticated }: { onAuthenticated: (name: string) => void }) {
+  const [mode, setMode] = useState<AuthMode>('login')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [enrolling, setEnrolling] = useState(false)
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setError('')
+
+    if (mode === 'signup') {
+      if (!name.trim() || !email.trim() || !password.trim()) {
+        setError('Preencha todos os campos para criar sua conta.')
+        return
+      }
+      setEnrolling(true)
+      await new Promise((resolve) => window.setTimeout(resolve, 900))
+
+      const accounts = JSON.parse(localStorage.getItem('mood-accounts') || '[]') as Array<{ email: string; name: string }>
+      if (accounts.some((account) => account.email.toLowerCase() === email.trim().toLowerCase())) {
+        setError('Este e-mail já possui uma conta vinculada.')
+        setEnrolling(false)
+        return
+      }
+      accounts.push({ email: email.trim(), name: name.trim() })
+      localStorage.setItem('mood-accounts', JSON.stringify(accounts))
+      localStorage.setItem('mood-session', name.trim())
+      setEnrolling(false)
+      onAuthenticated(name.trim())
+      return
+    }
+
+    if (!email.trim() || !password.trim()) {
+      setError('Informe seu e-mail e senha.')
+      return
+    }
+    const accounts = JSON.parse(localStorage.getItem('mood-accounts') || '[]') as Array<{ email: string; name: string }>
+    const account = accounts.find((item) => item.email.toLowerCase() === email.trim().toLowerCase())
+    if (!account) {
+      setError('Conta não encontrada. Crie uma conta primeiro.')
+      return
+    }
+    localStorage.setItem('mood-session', account.name)
+    onAuthenticated(account.name)
+  }
+
+  return (
+    <main className="auth-page">
+      <section className="auth-visual" aria-label="Mood">
+        <div className="auth-brand">mood</div>
+        <div className="auth-orbit orbit-one"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=700&auto=format&fit=crop" alt="Paisagem mood" /></div>
+        <div className="auth-orbit orbit-two"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&auto=format&fit=crop" alt="Paisagem foco" /></div>
+        <div className="auth-orbit orbit-three"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=500&auto=format&fit=crop" alt="Paisagem hype" /></div>
+        <div className="auth-copy"><span>SEU ESPAÇO</span><strong>Momentos que fazem<br />sentido.</strong></div>
+      </section>
+
+      <section className="auth-panel">
+        <div className="auth-card">
+          <div className="auth-heading">
+            <p>{mode === 'login' ? 'BEM-VINDO DE VOLTA' : 'COMECE AGORA'}</p>
+            <h1>{mode === 'login' ? 'Entre na sua conta' : 'Crie sua conta'}</h1>
+          </div>
+
+          <div className="auth-tabs" role="tablist">
+            <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setError('') }} role="tab" aria-selected={mode === 'login'}>Entrar</button>
+            <button className={mode === 'signup' ? 'active' : ''} onClick={() => { setMode('signup'); setError('') }} role="tab" aria-selected={mode === 'signup'}>Cadastrar</button>
+          </div>
+
+          <form className="auth-form" onSubmit={submit}>
+            {mode === 'signup' && <label>Nome<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Como você quer ser chamado?" autoComplete="name" /></label>}
+            <label>E-mail<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@email.com" autoComplete="email" /></label>
+            <label>Senha<div className="password-input"><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} /><button type="button" aria-label="Mostrar senha">◉</button></div></label>
+
+            {mode === 'signup' && <div className="biometric-box"><div className="face-mark" aria-hidden="true"><span></span></div><div><strong>Vínculo biométrico</strong><p>Associa uma biometria a uma única conta.</p></div><i>●</i></div>}
+            {error && <div className="auth-error" role="alert">{error}</div>}
+
+            <button className="auth-submit" type="submit" disabled={enrolling}>{enrolling ? <><span className="spinner"></span> Validando biometria...</> : mode === 'login' ? 'Entrar com biometria' : 'Cadastrar e ativar biometria'} </button>
+          </form>
+
+          <p className="auth-privacy">Ao continuar, você concorda com os <button>Termos</button> e a <button>Privacidade</button>.</p>
+        </div>
+      </section>
+    </main>
+  )
+}
+
 function App() {
+  const [sessionName, setSessionName] = useState(() => localStorage.getItem('mood-session'))
   const [activeMood, setActiveMood] = useState<Mood>('Para todos')
   const [view, setView] = useState<'feed' | 'board' | 'analytics'>('feed')
   const [isPlaying, setIsPlaying] = useState(false)
@@ -57,6 +148,8 @@ function App() {
   }, [lightMode])
   const filteredPosts = activeMood === 'Para todos' ? posts : posts.filter((post) => post.mood === activeMood)
 
+  if (!sessionName) return <AuthScreen onAuthenticated={setSessionName} />
+
   return (
     <div className={`app-shell ${activeCapsule !== null ? 'capsule-active' : ''} ${lowKey ? 'low-key' : ''} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <aside className="sidebar">
@@ -72,8 +165,8 @@ function App() {
         <button className="create-button">+ Criar</button>
         <div className="sidebar-profile">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop" alt="Perfil de Lia" />
-          <div><strong>lia</strong><span>@lia.mood</span></div>
-          <button aria-label="Mais opções">•••</button>
+          <div><strong>{sessionName}</strong><span>@{sessionName.toLowerCase().replace(/\s+/g, '.')}</span></div>
+          <button aria-label="Sair da conta" title="Sair" onClick={() => { localStorage.removeItem('mood-session'); setSessionName(null) }}>↪</button>
         </div>
       </aside>
 
